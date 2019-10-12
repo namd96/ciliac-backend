@@ -10,7 +10,7 @@ router.post('/login', function (req, res) {
    // var body = req.body;
    // con.query()
    
-   stmt = "select * from users where username= ?  "
+   let stmt = "select * from users where username= ?  "
    let toInsert = [req.body.username]
    con.query(stmt, toInsert, function (err, result) {
       if (err) {
@@ -40,7 +40,7 @@ router.post('/register', function (req, res) {
       return;
    }
    console.log("register called")
-   stmt = "insert into users(name,username, password,ciliac_patient,created_at) values(?,?,?,?,?)"
+   let stmt = "insert into users(name,username, password,ciliac_patient,created_at) values(?,?,?,?,?)"
    let toInsert = [body.name, body.username, body.password, body.ciliac_patient ? 1 : 0, new Date()]
    con.query(stmt, toInsert, function (err, result) {
       if (err) {

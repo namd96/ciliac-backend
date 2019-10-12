@@ -16,23 +16,23 @@ module.exports = {
 
                 if (err) {
                     console.log("[verirication failed]", err)
-                    res.json({ err: true, msg: "authentication failed" })
+                    res.status(401).json({ err: true, ok: false, msg: "authentication failed" })
                     return;
                 }
-                console.log("[decoded]", decoded, err)
-                req.user = decoded
+                console.log("[decoded]", decoded, err);
+                req.user = decoded;
                 next();
 
             })
         } catch (err) {
-            res.json({ err: true })
+            res.status(401).json({ err: true, ok: false })
         }
     },
 
     createToken(payload) {
         let signedToken;
-        signedToken = jwt.sign(payload, secret);
-        console.log("[signedToken]", signedToken)
+        signedToken = jwt.sign(payload, secret, { expiresIn: timeOut });
+        // console.log("[signedToken]", signedToken)
         /* create a signed token from payload  */
         return signedToken
     }

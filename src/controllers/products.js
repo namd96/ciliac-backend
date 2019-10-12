@@ -2,12 +2,8 @@ var express = require('express');
 var router = express.Router();
 var con = require('../connections/conn')
 
-router.get('/products', function (req, res) {
-    getAllProducts(req, res)
-})
-router.get('/queries', function (req, res) {
-    getAllQueries(req, res)
-})
+router.get('/products', getAllProducts)
+router.get('/queries', getAllQueries)
 router.get('/product/:id', function (req, res) {
     queryData = []
     let stmt = "select * from products where _id= ?  "
@@ -123,7 +119,7 @@ router.post('/enquire', function (req, res) {
 
 function getAllProducts(req, res) {
     let queryData = []
-    console.log("this shit is working man")
+    console.log("this shit is working girl")
     con.query('select * from products', function (err, result) {
         if (err) {
             res.json({
@@ -132,8 +128,7 @@ function getAllProducts(req, res) {
             })
             return;
         };
-        console.log("Result: " + result[0].glutenFree
-        );
+        console.log("Result: " + result[0].glutenFree);
 
         result.map((el) => queryData.push({
             name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
@@ -150,7 +145,7 @@ function getAllProducts(req, res) {
             data: data
         }
         console.log("sending products", query, productsToSend)
-        res.send(productsToSend)
+        res.json(productsToSend)
     });
 
 }
@@ -176,7 +171,7 @@ function getAllQueries(req, res) {
             data: queryData
         }
         console.log("sending products", productsToSend)
-        res.send(productsToSend)
+        res.json(productsToSend)
     });
 
 }
