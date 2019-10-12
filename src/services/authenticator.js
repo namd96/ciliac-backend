@@ -1,4 +1,4 @@
-let secret = require('../JWTsecret')
+let secret = require('../../config/JWTsecret')
 var jwt = require('jsonwebtoken');
 let timeOut = 2 * 3600 * 1000;
 module.exports = {
