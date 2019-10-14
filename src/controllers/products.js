@@ -82,6 +82,7 @@ router.post('/create/product', function (req, res) {
     con.query(stmt, toInsert, function (err, result) {
 
         if (err) {
+            console.log(err)
             res.json({
                 err: true,
                 msg: "sql error"
