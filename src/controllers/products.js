@@ -128,7 +128,7 @@ function getAllProducts(req, res) {
             })
             return;
         };
-        console.log("Result: " + result[0].glutenFree);
+        result[0] && console.log("Result: " + result[0].glutenFree);
 
         result.map((el) => queryData.push({
             name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
