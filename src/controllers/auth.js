@@ -19,8 +19,8 @@ router.post('/login', function (req, res) {
          return;
       }
       
-      console.log("login called ",result[0].password,req.body.password, result)
-      if (result[0].password == req.body.password) {
+      // console.log("login called ",result[0].password,req.body.password, result)
+      if (!!result[0] && (result[0].password == req.body.password)) {
          let token = authenticator.createToken({ username: req.body.username, user_id : result[0]._id })
 
          console.log("login called ")
