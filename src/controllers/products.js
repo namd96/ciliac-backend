@@ -10,6 +10,7 @@ router.get('/product/:id', function (req, res) {
     let toInsert = [req.params.id]
     con.query(stmt, toInsert, function (err, result) {
         if (err) {
+            console.log(err)
             res.json({
                 err: true,
                 msg: "sql error"
@@ -106,6 +107,7 @@ router.post('/enquire', function (req, res) {
     con.query(stmt, toInsert, function (err, result) {
 
         if (err) {
+            console.log(err)
             res.json({
                 err: true,
                 msg: "sql error"
@@ -123,6 +125,7 @@ function getAllProducts(req, res) {
     console.log("this shit is working girl")
     con.query('select * from products', function (err, result) {
         if (err) {
+            console.log(err)
             res.json({
                 err: true,
                 msg: "sql error"
@@ -155,6 +158,7 @@ function getAllQueries(req, res) {
     console.log("this shit is working man")
     con.query('select * from queries', function (err, result) {
         if (err) {
+            console.log(err)
             res.json({
                 err: true,
                 msg: "sql error"
