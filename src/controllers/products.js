@@ -76,7 +76,7 @@ router.post('/create/product', function (req, res) {
     let id = req.query.id;
     let body = req.body;
     console.log(req.body.glutenFree)
-    let stmt = `INSERT INTO PRODUCTS(name,company,upvotes,downvotes)
+    let stmt = `INSERT INTO products(name,company,upvotes,downvotes)
     VALUES(?,?,?,?)`;
     let toInsert = [body.name, body.company, body.glutenFree ? 1 : 0, body.glutenFree ? 0 : 1]
     let queryData = []
