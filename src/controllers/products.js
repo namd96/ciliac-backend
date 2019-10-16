@@ -41,7 +41,7 @@ router.get('/product/:id', function (req, res) {
 
 
 })
-router.put('/vote/:id', function (req, res) {
+router.post('/vote/:id', function (req, res) {
     queryData = []
     let stmt = "select * from products where _id= ?  "
     let toInsert = [req.params.id]
@@ -57,7 +57,8 @@ router.put('/vote/:id', function (req, res) {
             options = [result[0].upvotes + 1, req.params.id]
         }
         if (req.query.type == "down") {
-            statement = "update products set upvotes = ? where _id = ?"
+            console.log("coming here setting downvotes", result[0].downvotes ,req.params.id)
+            statement = "update products set downvotes = ? where _id = ?"
             options = [result[0].downvotes + 1, req.params.id]
         }
         console.log("[voting successfull]", statement, options)
@@ -75,10 +76,10 @@ router.post('/create/product', function (req, res) {
 
     let id = req.query.id;
     let body = req.body;
-    console.log(req.body.glutenFree)
+    console.log("[glutenFree]",req.body.glutonFree)
     let stmt = `INSERT INTO products(name,company,upvotes,downvotes)
     VALUES(?,?,?,?)`;
-    let toInsert = [body.name, body.company, body.glutenFree ? 1 : 0, body.glutenFree ? 0 : 1]
+    let toInsert = [body.name, body.company, body.glutonFree ? 1 : 0, body.glutonFree ? 0 : 1]
     let queryData = []
     con.query(stmt, toInsert, function (err, result) {
 
@@ -135,7 +136,7 @@ function getAllProducts(req, res) {
         result[0] && console.log("Result: " + result[0].glutenFree);
 
         result.map((el) => queryData.push({
-            name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
+            _id : el._id,    name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
             source_of_info: el.source_of_info, tags: el.tags, upvotes: el.upvotes, downvotes: el.downvotes
         })
         )
@@ -167,7 +168,7 @@ function getAllQueries(req, res) {
         };
 
         result.map((el) => queryData.push({
-            name: el.name, description: el.description, user_email: el.user_email
+          _id : el._id,  name: el.name, description: el.description, user_email: el.user_email
         })
         )
 
@@ -175,7 +176,7 @@ function getAllQueries(req, res) {
             count: queryData.length,
             data: queryData
         }
-        console.log("sending products", productsToSend)
+        // console.log("sending products", productsToSend)
         res.json(productsToSend)
     });
 
