@@ -119,9 +119,9 @@ router.post('/enquire', function (req, res) {
     let id = req.query.id;
     let body = req.body;
     console.log(req.body, req.user.user_id)
-    let stmt = `INSERT INTO queries(user_id,name,description,user_email)
-    VALUES(?,?,?,?)`;
-    let toInsert = [req.user.user_id, body.name, body.description, body.user_email]
+    let stmt = `INSERT INTO queries(user_id,name,description,user_email,company)
+    VALUES(?,?,?,?,?)`;
+    let toInsert = [req.user.user_id, body.name,body.description, body.user_email, body.company]
     let queryData = []
     con.query(stmt, toInsert, function (err, result) {
 
@@ -175,7 +175,7 @@ function getAllProducts(req, res) {
 }
 function getAllQueries(req, res) {
     let queryData = []
-    console.log("this shit is working man")
+    console.log("this shit is queries ")
     con.query('select * from queries where status = ?', [1], function (err, result) {
         if (err) {
             console.log(err)
@@ -187,7 +187,7 @@ function getAllQueries(req, res) {
         };
 
         result.map((el) => queryData.push({
-            _id: el._id, name: el.name, description: el.description, user_email: el.user_email
+            _id: el._id, name: el.name, description: el.description, user_email: el.user_email, company : el.company
         })
         )
 
@@ -195,7 +195,7 @@ function getAllQueries(req, res) {
             count: queryData.length,
             data: queryData
         }
-        // console.log("sending products", productsToSend)
+        console.log("sending products", productsToSend)
         res.json(productsToSend)
     });
 
