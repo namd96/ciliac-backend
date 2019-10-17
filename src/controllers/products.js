@@ -57,7 +57,7 @@ router.post('/vote/:id', function (req, res) {
             options = [result[0].upvotes + 1, req.params.id]
         }
         if (req.query.type == "down") {
-            console.log("coming here setting downvotes", result[0].downvotes ,req.params.id)
+            console.log("coming here setting downvotes", result[0].downvotes, req.params.id)
             statement = "update products set downvotes = ? where _id = ?"
             options = [result[0].downvotes + 1, req.params.id]
         }
@@ -76,10 +76,10 @@ router.post('/create/product', function (req, res) {
 
     let id = req.query.id;
     let body = req.body;
-    console.log("[glutenFree]",req.body.glutonFree)
+    console.log("[glutenFree]", req.body.glutonFree)
     let stmt = `INSERT INTO products(name,company,upvotes,downvotes)
     VALUES(?,?,?,?)`;
-    let toInsert = [body.name, body.company, body.glutonFree ? 1 : 0, body.glutonFree ? 0 : 1]
+    let toInsert = [body.name, body.company, (body.glutonFree == 1) ? 1 : 0, (body.glutonFree == 1) ? 0 : 1]
     let queryData = []
     con.query(stmt, toInsert, function (err, result) {
 
@@ -95,6 +95,24 @@ router.post('/create/product', function (req, res) {
         getAllProducts(req, res)
     })
 
+})
+
+router.delete('/query/:id', function (req, res) {
+    let stmt = "update queries set status = ? where _id = ?"
+    let toInsert = [0, req.params.id];
+    con.query(stmt, toInsert, function (err, result) {
+        if (err) {
+            console.log(err)
+            res.json({
+                err: true,
+                msg: "sql error"
+            })
+            return;
+        };
+        getAllQueries(req, res);
+
+
+    })
 })
 router.post('/enquire', function (req, res) {
 
@@ -118,8 +136,9 @@ router.post('/enquire', function (req, res) {
 
         getAllQueries(req, res)
     })
-
 })
+
+
 
 function getAllProducts(req, res) {
     let queryData = []
@@ -136,7 +155,7 @@ function getAllProducts(req, res) {
         result[0] && console.log("Result: " + result[0].glutenFree);
 
         result.map((el) => queryData.push({
-            _id : el._id,    name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
+            _id: el._id, name: el.name, company: el.company, glutonFree: el.glutenFree ? true : false,
             source_of_info: el.source_of_info, tags: el.tags, upvotes: el.upvotes, downvotes: el.downvotes
         })
         )
@@ -157,7 +176,7 @@ function getAllProducts(req, res) {
 function getAllQueries(req, res) {
     let queryData = []
     console.log("this shit is working man")
-    con.query('select * from queries', function (err, result) {
+    con.query('select * from queries where status = ?', [1], function (err, result) {
         if (err) {
             console.log(err)
             res.json({
@@ -168,7 +187,7 @@ function getAllQueries(req, res) {
         };
 
         result.map((el) => queryData.push({
-          _id : el._id,  name: el.name, description: el.description, user_email: el.user_email
+            _id: el._id, name: el.name, description: el.description, user_email: el.user_email
         })
         )
 

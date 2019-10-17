@@ -12,7 +12,7 @@ con.connect(function (err) {
     //   console.log("this is",err)
     if (err) {
         console.log("[failed the sql query]",err)
-        res.json({ err: true , msg : "sql error"})
+        // res.json({ err: true , msg : "sql error"})
         return;
      }
     console.log("Connected!");
