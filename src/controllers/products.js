@@ -4,6 +4,23 @@ var con = require('../connections/conn')
 
 router.get('/products', getAllProducts)
 router.get('/queries', getAllQueries)
+router.get('/comments/:id', getAllComments)
+router.post('/comment/:id', function (req, res) {
+    let stmt = "insert into comments(product_id,user_id, comment ) values ( ?, ? ,?)"
+    let options = [req.params.id, req.user.user_id, req.body.comment]
+    con.query(stmt, options, function (err, result) {
+        if (err) {
+            console.log(err)
+            res.json({
+                err: true,
+                msg: "sql error"
+            })
+            return;
+        };
+        getAllComments(req, res)
+    })
+
+})
 router.get('/product/:id', function (req, res) {
     queryData = []
     let stmt = "select * from products where _id= ?  "
@@ -32,7 +49,7 @@ router.get('/product/:id', function (req, res) {
         })
         var productsToSend = {
             count: data.length,
-            data: data
+            data: result
         }
         console.log("sending products", query, productsToSend)
         res.send(productsToSend)
@@ -40,6 +57,25 @@ router.get('/product/:id', function (req, res) {
 
 
 
+})
+router.post('/concern/:id', function (req, res) {
+    let stmt = "insert into concerns (user_id, product_id, concern, user_email) values ( ?,?,?,?)"
+    let options = [req.user.user_id, req.params.id, req.body.concern, req.body.user_email]
+    con.query(stmt, options, function (err, result) {
+        if (err) {
+            console.log(err)
+            res.json({
+                err: true,
+                msg: "sql error"
+            })
+            return;
+        };
+                    res.json({
+                        err: false,
+                        msg: "Successfully raised a concern"
+                    })
+
+    })
 })
 router.post('/vote/:id', function (req, res) {
     queryData = []
@@ -121,7 +157,7 @@ router.post('/enquire', function (req, res) {
     console.log(req.body, req.user.user_id)
     let stmt = `INSERT INTO queries(user_id,name,description,user_email,company)
     VALUES(?,?,?,?,?)`;
-    let toInsert = [req.user.user_id, body.name,body.description, body.user_email, body.company]
+    let toInsert = [req.user.user_id, body.name, body.description, body.user_email, body.company]
     let queryData = []
     con.query(stmt, toInsert, function (err, result) {
 
@@ -173,6 +209,21 @@ function getAllProducts(req, res) {
     });
 
 }
+function getAllComments(req, res) {
+    let stmt = "select * from comments  inner join users on users._id = comments.user_id where product_id = ?"
+    let options = [req.params.id]
+    con.query(stmt, options, function (err, result) {
+        if (err) {
+            console.log(err)
+            res.json({
+                err: true,
+                msg: "sql error"
+            })
+            return;
+        };
+        res.json({ data: result })
+    })
+}
 function getAllQueries(req, res) {
     let queryData = []
     console.log("this shit is queries ")
@@ -187,7 +238,7 @@ function getAllQueries(req, res) {
         };
 
         result.map((el) => queryData.push({
-            _id: el._id, name: el.name, description: el.description, user_email: el.user_email, company : el.company
+            _id: el._id, name: el.name, description: el.description, user_email: el.user_email, company: el.company
         })
         )
 
